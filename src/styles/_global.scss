@@ -1,0 +1,131 @@
+.multi-select-holder {
+    width: 270px;
+}
+
+.multi-select-parent {
+    position: relative;
+    width: 100%;
+
+    .base {
+        background-color: #fff;
+        border-radius: 8px;
+        box-sizing: border-box;
+        color: #646567;
+        width: 100%;
+    }
+
+    .input-parent {
+        position: relative;
+
+        input {
+            @extend .base;
+            border: 1px solid #d9d9d9;
+            margin: 0;
+            outline: none !important;
+            padding: 8px 8px;
+            transition: all 0.3s ease;
+
+            &:focus,
+            &.open {
+                border-color: #4096ff;
+                box-shadow: 0 0 0 2px rgba(24, 144, 255, 0.2);
+                outline: #4096ff;
+            }
+
+        }
+
+        .chevron {
+            position: absolute;
+            right: 20px;
+            top: 9px;
+            transition: all 0.3s ease-in-out;
+        }
+
+        .chevron-rotate {
+            @extend .chevron;
+            transform: rotate(180deg);
+        }
+    }
+
+    .ul-parent {
+        @extend .base;
+        height: 0;
+        max-height: 150px;
+        opacity: 0;
+        position: absolute;
+        overflow: hidden;
+        transition: all 0.2s ease-in-out;
+        top: 36px;
+
+        &.open {
+            border: 1px solid #d9d9d9;
+            transition: all 0.2s ease-in-out;
+            opacity: 1 !important;
+        }
+
+        ul {
+            @extend .base;
+            box-shadow: 0px 4px 12px rgba(0, 0, 0, 0.1);
+            border: none;
+            margin: 0;
+            list-style: none;
+            overflow: hidden;
+            padding: 0 16px;
+            height: 100%;
+            opacity: 1;
+
+            &.open {
+                padding: 8px;
+                overflow-y: auto;
+            }
+
+            li {
+                border-radius: 4px;
+                cursor: pointer;
+                font-size: 14px;
+                margin: 2px 0;
+                padding: 8px 16px;
+                transition: all 0.3s ease;
+
+                &:hover {
+                    background-color: #f5f5f5;
+                }
+
+                &.selected {
+                    align-items: center;
+                    background-color: #f1f4ff;
+                    color: #4096ff;
+                    display: flex;
+                    justify-content: space-between;
+                }
+
+                &:first-child {
+                    margin-top: 0;
+                }
+
+                &:last-child {
+                    margin-bottom: 0;
+                }
+
+                .li-image-parent {
+                    display: flex;
+                    gap: 4px;
+
+                    img {
+                        width: 16px;
+                        height: 16px;
+                    }
+                }
+            }
+        }
+    }
+
+    ul.no-data {
+        align-items: center;
+        display: flex;
+        height: 100px;
+        justify-content: center;
+        line-height: 27px;
+        text-align: center;
+    }
+}
