@@ -6,7 +6,7 @@ import { multiSelectList } from "./utils/constant";
 import { Toaster } from "react-hot-toast";
 
 function App() {
-  const handleChangeList = (list: string[]) => {
+  const handleChangeList = (list: MultiSelectList[]) => {
     console.log(list);
   };
 

@@ -23,6 +23,7 @@
             margin: 0;
             outline: none !important;
             padding: 8px 8px;
+            padding-right: 40px;
             transition: all 0.3s ease;
 
             &:focus,
@@ -85,6 +86,7 @@
                 font-size: 14px;
                 margin: 2px 0;
                 padding: 8px 16px;
+                position: relative;
                 transition: all 0.3s ease;
 
                 &:hover {
@@ -110,12 +112,28 @@
                 .li-image-parent {
                     display: flex;
                     gap: 4px;
+                    overflow: hidden;
+                    width: 70%;
 
                     img {
                         width: 16px;
                         height: 16px;
                     }
+
+                    span {
+                        display: block;
+                        white-space: nowrap;
+                        overflow: hidden;
+                        text-overflow: ellipsis;
+                        max-width: 80%;
+                    }
                 }
+
+                .icon {
+                    position: absolute;
+                    right: 8px;
+                }
+
             }
         }
     }

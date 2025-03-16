@@ -10,12 +10,12 @@ import toast from "react-hot-toast";
 interface State {
   isOpen: boolean;
   inputValue: string;
-  selectedItems: string[];
   uniqList: MultiSelectList[];
+  lastSelectItemIndex: number | null;
 }
 
 interface Props {
-  onChangeSelectedItem: (selectedItem: string[]) => void;
+  onChangeSelectedItem: (selectedItem: MultiSelectList[]) => void;
   list: MultiSelectList[];
 }
 
@@ -23,13 +23,13 @@ const MultiSelect = ({ onChangeSelectedItem, list }: Props) => {
   const [state, setState] = useState<State>({
     isOpen: false,
     inputValue: "",
-    selectedItems: [],
+    lastSelectItemIndex: null,
     uniqList: list?.length
       ? Array.from(new Map(list.map((item) => [item.value, item])).values())
-      : [], //prevents to have duplicate item(s)
+      : [], //prevents to have duplicate items
   });
   //destructure state
-  const { isOpen, selectedItems, inputValue, uniqList } = state;
+  const { isOpen, inputValue, uniqList, lastSelectItemIndex } = state;
   //keeps main div
   const divRef = useRef<HTMLDivElement | null>(null);
   //keeps main div
@@ -63,63 +63,60 @@ const MultiSelect = ({ onChangeSelectedItem, list }: Props) => {
   const handleClickItem = (e: React.MouseEvent<HTMLLIElement>) => {
     e.stopPropagation();
     const value = e.currentTarget.dataset.value;
+    const index = e.currentTarget.dataset.index;
 
     if (!value) {
       return;
     }
 
-    const isInList = selectedItems.includes(value || "");
+    if (index) {
+      const currentItem = uniqList[+index];
 
-    if (isInList) {
-      const itemIndex = selectedItems.indexOf(value);
-
-      const newArray = selectedItems.toSpliced(itemIndex, 1);
+      const newArray = uniqList.toSpliced(+index, 1, {
+        ...currentItem,
+        isChecked: !currentItem.isChecked,
+      });
 
       setState((prev) => ({
         ...prev,
-        selectedItems: [...newArray],
+        uniqList: [...newArray],
+        lastSelectItemIndex: currentItem.isChecked ? null : +index,
+        inputValue: currentItem.isChecked ? "" : currentItem.label,
       }));
 
       onChangeSelectedItem([...newArray]);
 
       return;
     }
-
-    setState((prev) => ({
-      ...prev,
-      selectedItems: [...prev.selectedItems, value],
-    }));
-    onChangeSelectedItem([...selectedItems, value]);
   };
   //when user type
   const handleKeyUp = (event: React.KeyboardEvent<HTMLInputElement>) => {
     if (event.key === "Enter") {
-      if (inputValue) {
-        // remove space from start and end of typed item
-        const trimedValue = inputValue.trim();
-        // check if typed item is duplicate or not
-        const isInList = uniqList.find(
-          (item) => item.label === trimedValue || item.value === trimedValue
-        );
-
-        if (isInList) {
-          toast.error("Entered item exist on list!");
-          return;
-        }
-        // create new object to add uniqList
-        const newObject: MultiSelectList = {
-          iconName: "/assets/images/default.png",
-          label: trimedValue,
-          value: trimedValue,
-        };
+      const trimedValue = inputValue.trim();
+      if (trimedValue) {
         // update uniq list
-        if (uniqList) {
+        if (uniqList && lastSelectItemIndex !== null) {
+          const newItem: MultiSelectList = {
+            ...uniqList[lastSelectItemIndex],
+            label: trimedValue,
+          };
+
+          const newArray = uniqList.toSpliced(lastSelectItemIndex, 1, {
+            ...newItem,
+            label: trimedValue,
+          });
+
           setState((prev) => ({
             ...prev,
-            uniqList: [...prev.uniqList, newObject],
+            uniqList: [...newArray],
             inputValue: "",
           }));
+          onChangeSelectedItem([...newArray]);
+        } else {
+          toast.error("Please select an item");
         }
+      } else {
+        toast.error("Input is Empty!");
       }
     }
   };
@@ -164,27 +161,29 @@ const MultiSelect = ({ onChangeSelectedItem, list }: Props) => {
         >
           <ul className={`${isOpen ? "open" : ""}`}>
             {uniqList?.map((item, index) => {
-              return selectedItems.includes(item.value) ? (
+              return item.isChecked ? (
                 <li
                   onClick={handleClickItem}
-                  key={item.value + index}
+                  key={item.value}
                   data-value={item.value}
+                  data-index={index}
                   className="selected"
                 >
                   <div className="li-image-parent">
-                    <span>{item.label}</span>
+                    <span title={item.label}>{item.label}</span>
                     <img src={item.iconName} alt={item.label} />
                   </div>
-                  <TickIcon />
+                  <TickIcon className="icon" />
                 </li>
               ) : (
                 <li
                   onClick={handleClickItem}
-                  key={item.value + index}
+                  key={item.value}
+                  data-index={index}
                   data-value={item.value}
                 >
                   <div className="li-image-parent">
-                    <span>{item.label}</span>
+                    <span title={item.label}>{item.label}</span>
                     <img src={item.iconName} alt={item.label} />
                   </div>
                 </li>

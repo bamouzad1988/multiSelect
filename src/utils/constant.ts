@@ -1,5 +1,9 @@
 export const multiSelectList: MultiSelectList[] = [
-  { label: "Game", value: "game", iconName: "/assets/images/game.png" },
+  {
+    label: "Game-Game-Game-Game-Game-Game-Game-Game-",
+    value: "game",
+    iconName: "/assets/images/game.png",
+  },
   { label: "Sport", value: "sport", iconName: "/assets/images/ball.png" },
   {
     label: "Education",
