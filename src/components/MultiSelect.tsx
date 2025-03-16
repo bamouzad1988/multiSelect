@@ -137,7 +137,7 @@ const MultiSelect = ({ onChangeSelectedItem, list }: Props) => {
       {/* input */}
       <div className="input-parent">
         <input
-          placeholder="type new item"
+          placeholder="Select an item and edit..."
           type="text"
           name="multiSelect"
           onFocus={handleClickInput}
